@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Objectifs du Jour</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>📊 Suivi des Objectifs</h1>
+
+        <div class="content">
+            <div class="card">
+                <h2>🎯 Objectif du Jour</h2>
+                <p id="objectifJour">Chargement...</p>
+            </div>
+
+            <div class="card">
+                <h2>📅 Objectif du Mois</h2>
+                <p id="objectifMois">Chargement...</p>
+            </div>
+
+            <div class="card">
+                <h2>✅ Clôtures Aujourd’hui</h2>
+                <p id="cloturesJour">Chargement...</p>
+            </div>
+        </div>
+
+        <button onclick="location.href='update.html'">Modifier</button>
+    </div>
+
+    <script>
+        // Charger les données depuis localStorage
+        document.getElementById("objectifJour").innerText = localStorage.getItem("objectifJour") || "Non défini";
+        document.getElementById("objectifMois").innerText = localStorage.getItem("objectifMois") || "Non défini";
+        document.getElementById("cloturesJour").innerText = localStorage.getItem("cloturesJour") || "Non défini";
+    </script>
+
+</body>
+</html>

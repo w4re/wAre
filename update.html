@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier les Objectifs</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>✏️ Modifier les Objectifs</h1>
+
+        <form id="updateForm">
+            <label>🎯 Objectif du Jour:</label>
+            <input type="text" id="objectifJour" required><br>
+
+            <label>📅 Objectif du Mois:</label>
+            <input type="text" id="objectifMois" required><br>
+
+            <label>✅ Clôtures Aujourd’hui:</label>
+            <input type="text" id="cloturesJour" required><br>
+
+            <button type="submit">Sauvegarder</button>
+        </form>
+    </div>
+
+    <script>
+        // Préremplir les champs avec les valeurs actuelles
+        document.getElementById('objectifJour').value = localStorage.getItem("objectifJour") || "";
+        document.getElementById('objectifMois').value = localStorage.getItem("objectifMois") || "";
+        document.getElementById('cloturesJour').value = localStorage.getItem("cloturesJour") || "";
+
+        // Sauvegarder les nouvelles valeurs
+        document.getElementById('updateForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            localStorage.setItem("objectifJour", document.getElementById('objectifJour').value);
+            localStorage.setItem("objectifMois", document.getElementById('objectifMois').value);
+            localStorage.setItem("cloturesJour", document.getElementById('cloturesJour').value);
+
+            alert("Données mises à jour !");
+            window.location.href = "index.html"; // Retour à l'accueil
+        });
+    </script>
+
+</body>
+</html>
