@@ -4,39 +4,68 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Do It Yourself</title>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
+    
+    <!-- Favicon pour éviter l’erreur 404 -->
+    <link rel="icon" href="data:,">
+    
+    <!-- Styles CSS pour une mise en page propre -->
     <style>
-        body { font-family: Arial, sans-serif; background: #222; color: #fff; text-align: center; }
-        .container { max-width: 600px; margin: 50px auto; background: #333; padding: 20px; border-radius: 10px; }
-        h1 { color: #ffcc00; font-size: 28px; }
-        .data { font-size: 22px; margin: 10px 0; padding: 10px; background: #444; border-radius: 5px; }
-        button { background: #ffcc00; padding: 10px 15px; font-size: 16px; cursor: pointer; margin-top: 10px; }
-        button:hover { background: #e6b800; }
-        .hidden { display: none; }
-        input { width: 90%; padding: 8px; margin: 5px 0; }
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        .container {
+            width: 50%;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+        button {
+            padding: 10px;
+            background: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+        button:hover {
+            background: #218838;
+        }
+        input {
+            padding: 8px;
+            width: 80%;
+            margin: 5px;
+        }
     </style>
 </head>
 <body>
 
+    <h1>Do It Yourself</h1>
     <div class="container">
-        <h1>Do It Yourself</h1>
-        <div class="data"><strong>🎯 Objectif du jour :</strong> <span id="objectifJour">10</span></div>
-        <div class="data"><strong>📅 Objectif du mois :</strong> <span id="objectifMois">200</span></div>
-        <div class="data"><strong>📊 Clôtures aujourd'hui :</strong> <span id="clotureJour">5</span></div>
-        <div class="data"><strong>❤️ Combien j'aime ma femme :</strong> <span id="amourFemme">∞</span></div>
-        
-        <button onclick="toggleEdit()">Modifier</button>
+        <p><strong>Objectif du jour:</strong> <span id="objectifJour">Chargement...</span></p>
+        <p><strong>Objectif du mois:</strong> <span id="objectifMois">Chargement...</span></p>
+        <p><strong>Nombre de clôtures aujourd’hui:</strong> <span id="nbClotures">Chargement...</span></p>
+        <p><strong>Combien j’aime ma femme:</strong> <span id="amourFemme">Chargement...</span></p>
 
-        <div id="editForm" class="hidden">
-            <h2>Modifier les valeurs</h2>
-            <input type="number" id="newObjectifJour" placeholder="Objectif du jour">
-            <input type="number" id="newObjectifMois" placeholder="Objectif du mois">
-            <input type="number" id="newClotureJour" placeholder="Clôtures aujourd'hui">
-            <input type="text" id="newAmourFemme" placeholder="Amour">
-            <button onclick="saveData()">Sauvegarder</button>
-        </div>
+        <!-- Inputs pour modifier les valeurs -->
+        <input type="text" id="newObjectifJour" placeholder="Nouvel objectif du jour">
+        <input type="text" id="newObjectifMois" placeholder="Nouvel objectif du mois">
+        <input type="number" id="newNbClotures" placeholder="Nombre de clôtures">
+        <input type="text" id="newAmourFemme" placeholder="Combien j’aime ma femme">
+
+        <button onclick="saveData()">Modifier</button>
     </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js"></script>
 
     <script>
         // 🔥 CONFIGURATION FIREBASE 🔥
@@ -49,38 +78,39 @@
             messagingSenderId: "550925523531",
             appId: "1:550925523531:web:091351337bdebea46fcbce"
         };
+
+        // Initialiser Firebase
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Charger les valeurs en temps réel 🔄
-        function loadData() {
-            db.ref("data").on("value", (snapshot) => {
-                let data = snapshot.val();
-                document.getElementById("objectifJour").textContent = data.objectifJour;
-                document.getElementById("objectifMois").textContent = data.objectifMois;
-                document.getElementById("clotureJour").textContent = data.clotureJour;
-                document.getElementById("amourFemme").textContent = data.amourFemme;
+        // Fonction pour récupérer les données en temps réel
+        function getData() {
+            db.ref("objectifs").on("value", (snapshot) => {
+                const data = snapshot.val();
+                document.getElementById("objectifJour").innerText = data?.objectifJour || "Non défini";
+                document.getElementById("objectifMois").innerText = data?.objectifMois || "Non défini";
+                document.getElementById("nbClotures").innerText = data?.nbClotures || "0";
+                document.getElementById("amourFemme").innerText = data?.amourFemme || "∞";
             });
         }
 
-        // Afficher/Masquer formulaire
-        function toggleEdit() {
-            document.getElementById("editForm").classList.toggle("hidden");
-        }
-
-        // Sauvegarder les nouvelles valeurs 🔄
+        // Fonction pour modifier les valeurs
         function saveData() {
-            let newData = {
-                objectifJour: document.getElementById("newObjectifJour").value || 10,
-                objectifMois: document.getElementById("newObjectifMois").value || 200,
-                clotureJour: document.getElementById("newClotureJour").value || 5,
-                amourFemme: document.getElementById("newAmourFemme").value || "∞"
-            };
-            db.ref("data").set(newData);
-            toggleEdit();
+            const newObjectifJour = document.getElementById("newObjectifJour").value;
+            const newObjectifMois = document.getElementById("newObjectifMois").value;
+            const newNbClotures = document.getElementById("newNbClotures").value;
+            const newAmourFemme = document.getElementById("newAmourFemme").value;
+
+            db.ref("objectifs").set({
+                objectifJour: newObjectifJour || "Non défini",
+                objectifMois: newObjectifMois || "Non défini",
+                nbClotures: newNbClotures || "0",
+                amourFemme: newAmourFemme || "∞"
+            });
         }
 
-        loadData();
+        // Charger les données à l'ouverture de la page
+        getData();
     </script>
 
 </body>
